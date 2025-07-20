@@ -2,12 +2,12 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# Game Setup
+
 st.set_page_config(page_title="Eco-Apocalypse: Air Monster War", layout="centered")
 
 st.title("Eco-Apocalypse: The Air Monster War")
 
-# Define actions
+
 eco_actions = [
     "Plant Trees",
     "Use Public Transport",
@@ -20,7 +20,7 @@ eco_actions = [
     "Recycle Campaign"
 ]
 
-# Monster mapping function
+#Monster mapping 
 def get_monster(aqi):
     if aqi <= 50:
         return " CleanSky"
@@ -33,11 +33,11 @@ def get_monster(aqi):
     else:
         return "Vaporgeddon"
 
-# AQI calculator
+#AQI calculator
 def calculate_aqi(pm25, pm10, no2, co):
     return int(pm25 * 0.5 + pm10 * 0.3 + no2 * 0.1 + co * 30)
 
-# Eco action effects
+#Eco action effect
 def apply_action(pm25, pm10, no2, co, action):
     if action == "Plant Trees":
         pm25 -= 30
@@ -62,10 +62,10 @@ def apply_action(pm25, pm10, no2, co, action):
     elif action == "Recycle Campaign":
         pm10 -= 15
 
-    # Clamp to avoid negatives
+    # to avoid negatives
     return max(pm25, 0), max(pm10, 0), max(no2, 0), max(co, 0)
 
-# Session state: Day & Score
+# Day & Score
 if 'day' not in st.session_state:
     st.session_state.day = 1
     st.session_state.pm25 = np.random.randint(100, 250)
@@ -75,7 +75,7 @@ if 'day' not in st.session_state:
 
 st.header(f"Day {st.session_state.day}")
 
-# Show pollution values
+#pollution values
 aqi = calculate_aqi(st.session_state.pm25, st.session_state.pm10, st.session_state.no2, st.session_state.co)
 monster = get_monster(aqi)
 
@@ -83,11 +83,11 @@ st.subheader(f"Monster: {monster}")
 st.write(f"**AQI:** {aqi}")
 st.write(f"PM2.5: {st.session_state.pm25}, PM10: {st.session_state.pm10}, NO2: {st.session_state.no2}, CO: {st.session_state.co}")
 
-# Player Action
+#Action
 action = st.selectbox("Choose an Eco Action for Today:", eco_actions)
 
 if st.button("Apply Action & Continue ➡️"):
-    # Apply action and update pollution
+    #Apply action & update pollution
     pm25, pm10, no2, co = apply_action(
         st.session_state.pm25, 
         st.session_state.pm10, 
@@ -96,12 +96,12 @@ if st.button("Apply Action & Continue ➡️"):
         action
     )
 
-    # Save new pollution values
+    
     st.session_state.pm25 = pm25
     st.session_state.pm10 = pm10
     st.session_state.no2 = no2
     st.session_state.co = co
 
-    # Next day
+    #Next day
     st.session_state.day += 1
     st.rerun()
